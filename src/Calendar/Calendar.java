@@ -33,7 +33,7 @@ public class Calendar extends JFrame implements ActionListener {
 	}
 	
 	int preMonth = 5;
-	String preYear = "   2021   ";
+	int preYear = 2021;
 	
 	public Container init() {
 		Container cn = this.getContentPane();
@@ -56,7 +56,7 @@ public class Calendar extends JFrame implements ActionListener {
 		cn.add(pn);
 		
 		JPanel pn2 = new JPanel();
-		pn2.setLayout(new FlowLayout());
+		pn2.setLayout(new GridLayout(1, 2));
 		pn2.setBackground(Color.black);
 		
 		ch = new JComboBox<>();
@@ -64,10 +64,10 @@ public class Calendar extends JFrame implements ActionListener {
 		ch.setBackground(null);
 		ch.setFont(new Font("Britannic Bold", 1, 20));
 		for (int i = 0; i < 12; i++)
-			ch.addItem(t[i]);
+			ch.addItem("   " + t[i]);
 		ch.setSelectedIndex(preMonth);
 		
-		tf = new JTextField("    2021    ");
+		tf = new JTextField("2021");
 		tf.setBackground(Color.black);
 		tf.setForeground(Color.white);
 		tf.setBorder(null);
@@ -97,9 +97,11 @@ public class Calendar extends JFrame implements ActionListener {
 				if (str.matches("[0-9]+") && (m != preMonth || !str.equals(preYear))) {
 //					System.out.println("Ok");
 					ch.setSelectedIndex(m);
-					update(m + 1, Integer.parseInt(str));
-					preMonth = m;
-					preYear = str;
+					if (str.length() < 9) {
+						update(m + 1, Integer.parseInt(str));
+						preMonth = m;
+						preYear = Integer.parseInt(str);
+					}
 				}
 			}
 		});
@@ -156,12 +158,8 @@ public class Calendar extends JFrame implements ActionListener {
 	}
 	
 	public int getThu(int month, int year) {
-		int d = 0;
-		for (int i = 1; i <= year; i++)
-			if (isLeapYear(i))
-				d += 366;
-			else
-				d += 365;
+//		System.out.println(year);
+		int d = year % 7 + (year / 4) - (year / 100) + (year / 400);
 		for (int i = 1; i < month; i++)
 			d += Nday(i, year);
 		return (d - 1) % 7 + 2;
