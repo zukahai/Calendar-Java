@@ -1,26 +1,39 @@
 package Calendar;
 
+import java.awt.Choice;
 import java.awt.Color;
 import java.awt.Container;
+import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.Timer;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 
 public class Calendar extends JFrame implements ActionListener {
 	Container cn;
 	JButton bt[][] = new JButton[7][7];
+	JComboBox ch;
+	JTextField tf;
+	Timer timer;
+	
 	String w[] = {"Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"};
+	String t[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
 	public Calendar() {
 		super("Calendar - HaiZuka");
 		cn = init();
 	}
+	
+	int preMonth = 5;
+	String preYear = "   2021   ";
 	
 	public Container init() {
 		Container cn = this.getContentPane();
@@ -42,12 +55,55 @@ public class Calendar extends JFrame implements ActionListener {
 			bt[0][i].setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.cyan));
 		cn.add(pn);
 		
+		JPanel pn2 = new JPanel();
+		pn2.setLayout(new FlowLayout());
+		pn2.setBackground(Color.black);
+		
+		ch = new JComboBox<>();
+//		ch.setBackground(Color.black);
+		ch.setBackground(null);
+		ch.setFont(new Font("Britannic Bold", 1, 20));
+		for (int i = 0; i < 12; i++)
+			ch.addItem(t[i]);
+		ch.setSelectedIndex(preMonth);
+		
+		tf = new JTextField("    2021    ");
+		tf.setBackground(Color.black);
+		tf.setForeground(Color.white);
+		tf.setBorder(null);
+		tf.setFont(new Font("Britannic Bold", 1, 20));
+		tf.setHorizontalAlignment(JTextField.CENTER);
+		
+		pn2.add(ch);
+		pn2.add(tf);
+		
+		cn.add(pn2, "North");
+		
 		this.setVisible(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 //		this.setResizable(false);
 		this.setSize(500, 400);
 		this.setLocationRelativeTo(null);
-		update(4, 2021);
+		
+		timer = new Timer(1000, new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int m = ch.getSelectedIndex();
+				String str = tf.getText();
+				while (str.charAt(0) == ' ')
+					str = str.substring(1, str.length() - 1);
+				while (str.charAt(str.length() - 1) == ' ')
+					str = str.substring(0, str.length() - 2);
+//				System.out.println(m + " " + str);
+				if (str.matches("[0-9]*") && (m != preMonth || !str.equals(preYear))) {
+//					System.out.println("Ok");
+					ch.setSelectedIndex(m);
+					update(m + 1, Integer.parseInt(str));
+					preMonth = m;
+					preYear = str;
+				}
+			}
+		});
+		
 		return cn;
 	}
 	
@@ -68,6 +124,7 @@ public class Calendar extends JFrame implements ActionListener {
 		int I = 1, J = start;
 		for (int i = 1; i <= Nday(month, year); i++) {
 			bt[I][J].setText(i + "");
+			bt[I][J].setForeground(Color.white);
 			J++;
 			if (J == 7) {
 				J = 0;
@@ -134,7 +191,7 @@ public class Calendar extends JFrame implements ActionListener {
 	}
 	
 	public static void main(String[] args) {
-		new Calendar();
+		new Calendar().timer.start();
 	}
 
 	@Override
