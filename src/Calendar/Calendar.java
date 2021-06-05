@@ -89,12 +89,12 @@ public class Calendar extends JFrame implements ActionListener {
 			public void actionPerformed(ActionEvent e) {
 				int m = ch.getSelectedIndex();
 				String str = tf.getText();
-				while (str.charAt(0) == ' ')
+				while (str.length() > 1 && str.charAt(0) == ' ')
 					str = str.substring(1, str.length() - 1);
-				while (str.charAt(str.length() - 1) == ' ')
+				while (str.length() > 1 && str.charAt(str.length() - 1) == ' ')
 					str = str.substring(0, str.length() - 2);
 //				System.out.println(m + " " + str);
-				if (str.matches("[0-9]*") && (m != preMonth || !str.equals(preYear))) {
+				if (str.matches("[0-9]+") && (m != preMonth || !str.equals(preYear))) {
 //					System.out.println("Ok");
 					ch.setSelectedIndex(m);
 					update(m + 1, Integer.parseInt(str));
@@ -123,7 +123,7 @@ public class Calendar extends JFrame implements ActionListener {
 			bt[0][i].setText(w[i]);
 		int I = 1, J = start;
 		for (int i = 1; i <= Nday(month, year); i++) {
-			bt[I][J].setText(i + "");
+			bt[I][J].setText(String.valueOf(i));
 			bt[I][J].setForeground(Color.white);
 			J++;
 			if (J == 7) {
