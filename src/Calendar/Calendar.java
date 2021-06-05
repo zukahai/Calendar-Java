@@ -85,7 +85,7 @@ public class Calendar extends JFrame implements ActionListener {
 		this.setSize(500, 400);
 		this.setLocationRelativeTo(null);
 		
-		timer = new Timer(1000, new ActionListener() {
+		timer = new Timer(200, new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int m = ch.getSelectedIndex();
 				String str = tf.getText();
