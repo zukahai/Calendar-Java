@@ -7,6 +7,7 @@ import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigInteger;
+import java.util.Calendar;
 
 import javax.swing.Timer;
 import javax.swing.BorderFactory;
@@ -16,22 +17,26 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class Calendar extends JFrame implements ActionListener {
+public class CalendarHaiZuka extends JFrame implements ActionListener {
 	Container cn;
 	JButton bt[][] = new JButton[7][7];
 	JComboBox ch;
 	JTextField tf;
 	Timer timer;
+	Calendar c = Calendar.getInstance();
+    int YEAR = c.get(Calendar.YEAR);
+    int MONTH = c.get(Calendar.MONTH);
+    int DAY = c.get(Calendar.DAY_OF_MONTH);
 	
 	String w[] = {"Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"};
 	String t[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
-	public Calendar() {
+	public CalendarHaiZuka() {
 		super("Calendar - HaiZuka");
 		cn = init();
 	}
 	
-	int preMonth = 5;
-	BigInteger preYear = toBig(2021);
+	int preMonth = MONTH;
+	BigInteger preYear = toBig(YEAR);
 	
 	public Container init() {
 		Container cn = this.getContentPane();
@@ -59,13 +64,14 @@ public class Calendar extends JFrame implements ActionListener {
 		
 		ch = new JComboBox();
 		ch.setForeground(Color.white);
+		ch.setBackground(Color.black);
 		ch.setBackground(null);
 		ch.setFont(new Font("Britannic Bold", 1, 20));
 		for (int i = 0; i < 12; i++)
 			ch.addItem(t[i]);
 		ch.setSelectedIndex(preMonth);
 		
-		tf = new JTextField("2021");
+		tf = new JTextField(String.valueOf(YEAR));
 		tf.setBackground(Color.black);
 		tf.setForeground(Color.white);
 		tf.setBorder(null);
@@ -85,18 +91,19 @@ public class Calendar extends JFrame implements ActionListener {
 		update(preMonth + 1, preYear);
 		timer = new Timer(200, new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				Calendar c = Calendar.getInstance();
+				YEAR = c.get(Calendar.YEAR);
+			    MONTH = c.get(Calendar.MONTH);
+			    DAY = c.get(Calendar.DAY_OF_MONTH);
 				int m = ch.getSelectedIndex();
 				String str = tf.getText();
 				while (str.length() > 1 && str.charAt(0) == ' ')
 					str = str.substring(1, str.length() - 1);
 				while (str.length() > 1 && str.charAt(str.length() - 1) == ' ')
 					str = str.substring(0, str.length() - 2);
-//				System.out.println(m + " " + str);
 				if (str.matches("[0-9]+")) {
 					if ((m != preMonth || preYear.compareTo(new BigInteger(str)) != 0)) {
-//						System.out.println("Ok");
 						ch.setSelectedIndex(m);
-//						System.out.println("Str = " + str);
 						update(m + 1, new BigInteger(str));
 						preMonth = m;
 						preYear = new BigInteger(str);
@@ -109,7 +116,16 @@ public class Calendar extends JFrame implements ActionListener {
 		return cn;
 	}
 	
+	public void reset() {
+		for (int i = 1; i < 7; i ++)
+			for (int j = 0; j < 7; j++) {
+				bt[i][j].setBackground(Color.black);
+				bt[i][j].setForeground(Color.white);
+			}
+	}
+	
 	public void update(int month, BigInteger year) {
+		reset();
 		int thu = getThu(month, year);
 		int day = Nday(month, year);
 		int pday = 0;
@@ -124,9 +140,14 @@ public class Calendar extends JFrame implements ActionListener {
 		for (int i = 0; i < 7; i++)
 			bt[0][i].setText(w[i]);
 		int I = 1, J = start;
+//		System.out.println(month + " " + year);
+//		System.out.println(MONTH + " " + YEAR);
 		for (int i = 1; i <= day; i++) {
 			bt[I][J].setText(String.valueOf(i));
 			bt[I][J].setForeground(Color.white);
+			if (year.compareTo(toBig(YEAR)) == 0 && month == MONTH + 1 && i == DAY) {
+				bt[I][J].setBackground(Color.cyan);
+			}
 			J++;
 			if (J == 7) {
 				J = 0;
@@ -162,8 +183,6 @@ public class Calendar extends JFrame implements ActionListener {
 	}
 	
 	public int getThu(int month, BigInteger year) {
-//		System.out.println(year);
-//		int d = year + (year / 4) - (year / 100) + (year / 400);
 		BigInteger d = year;
 		d = d.multiply(toBig(497)).divide(toBig(400));
 		for (int i = 1; i < month; i++)
@@ -197,7 +216,7 @@ public class Calendar extends JFrame implements ActionListener {
 	}
 	
 	public static void main(String[] args) {
-		Calendar k = new Calendar();
+		CalendarHaiZuka k = new CalendarHaiZuka();
 		k.timer.start();
 	}
 
