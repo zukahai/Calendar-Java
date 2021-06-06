@@ -1,9 +1,6 @@
 package Calendar;
-
-import java.awt.Choice;
 import java.awt.Color;
 import java.awt.Container;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
@@ -64,7 +61,7 @@ public class Calendar extends JFrame implements ActionListener {
 		ch.setBackground(null);
 		ch.setFont(new Font("Britannic Bold", 1, 20));
 		for (int i = 0; i < 12; i++)
-			ch.addItem("   " + t[i]);
+			ch.addItem(t[i]);
 		ch.setSelectedIndex(preMonth);
 		
 		tf = new JTextField("2021");
@@ -124,7 +121,7 @@ public class Calendar extends JFrame implements ActionListener {
 		for (int i = 0; i < 7; i++)
 			bt[0][i].setText(w[i]);
 		int I = 1, J = start;
-		for (int i = 1; i <= Nday(month, year); i++) {
+		for (int i = 1; i <= day; i++) {
 			bt[I][J].setText(String.valueOf(i));
 			bt[I][J].setForeground(Color.white);
 			J++;
