@@ -6,6 +6,7 @@ import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigInteger;
 
 import javax.swing.Timer;
 import javax.swing.BorderFactory;
@@ -30,7 +31,7 @@ public class Calendar extends JFrame implements ActionListener {
 	}
 	
 	int preMonth = 5;
-	int preYear = 2021;
+	BigInteger preYear = toBig(2021);
 	
 	public Container init() {
 		Container cn = this.getContentPane();
@@ -49,15 +50,15 @@ public class Calendar extends JFrame implements ActionListener {
 				pn.add(bt[i][j]);
 			}
 		for (int i = 0; i < 7; i++)
-			bt[0][i].setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, Color.cyan));
+			bt[0][i].setBorder(BorderFactory.createMatteBorder(1, 0, 1, 0, Color.cyan));
 		cn.add(pn);
 		
 		JPanel pn2 = new JPanel();
 		pn2.setLayout(new GridLayout(1, 2));
 		pn2.setBackground(Color.black);
 		
-		ch = new JComboBox<>();
-//		ch.setBackground(Color.black);
+		ch = new JComboBox();
+		ch.setForeground(Color.white);
 		ch.setBackground(null);
 		ch.setFont(new Font("Britannic Bold", 1, 20));
 		for (int i = 0; i < 12; i++)
@@ -78,10 +79,10 @@ public class Calendar extends JFrame implements ActionListener {
 		
 		this.setVisible(true);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
-//		this.setResizable(false);
-		this.setSize(500, 400);
+		this.setResizable(false);
+		this.setSize(500, 398);
 		this.setLocationRelativeTo(null);
-		
+		update(preMonth + 1, preYear);
 		timer = new Timer(200, new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				int m = ch.getSelectedIndex();
@@ -91,29 +92,31 @@ public class Calendar extends JFrame implements ActionListener {
 				while (str.length() > 1 && str.charAt(str.length() - 1) == ' ')
 					str = str.substring(0, str.length() - 2);
 //				System.out.println(m + " " + str);
-				if (str.matches("[0-9]+") && (m != preMonth || !str.equals(preYear))) {
-//					System.out.println("Ok");
-					ch.setSelectedIndex(m);
-					if (str.length() < 9) {
-						update(m + 1, Integer.parseInt(str));
+				if (str.matches("[0-9]+")) {
+					if ((m != preMonth || preYear.compareTo(new BigInteger(str)) != 0)) {
+//						System.out.println("Ok");
+						ch.setSelectedIndex(m);
+//						System.out.println("Str = " + str);
+						update(m + 1, new BigInteger(str));
 						preMonth = m;
-						preYear = Integer.parseInt(str);
+						preYear = new BigInteger(str);
 					}
-				}
-			}
+				} else
+					tf.setText("");
+			} 
 		});
 		
 		return cn;
 	}
 	
-	public void update(int month, int year) {
+	public void update(int month, BigInteger year) {
 		int thu = getThu(month, year);
 		int day = Nday(month, year);
 		int pday = 0;
 		if (month > 1)
 			pday = Nday(month - 1, year);
 		else
-			pday = Nday(12, year - 1);
+			pday = Nday(12, year.subtract(toBig(1)));
 		int start = thu - 1;
 		if (start == 7)
 			start = 0;
@@ -146,23 +149,31 @@ public class Calendar extends JFrame implements ActionListener {
 		}
 	}
 	
-	public boolean isLeapYear(int N) {
-		if (N % 4 == 0 && N % 100 != 0)
+	public BigInteger toBig(int s) {
+		return new BigInteger(String.valueOf(s));
+	}
+	
+	public boolean isLeapYear(BigInteger N) {
+		if (N.mod(toBig(4)).compareTo(toBig(0)) == 0 && N.mod(toBig(100)).compareTo(toBig(0)) != 0)
 			return true;
-		if (N % 400 == 0)
+		if (N.mod(toBig(400)).compareTo(toBig(0)) == 0)
 			return true;
 		return false;
 	}
 	
-	public int getThu(int month, int year) {
+	public int getThu(int month, BigInteger year) {
 //		System.out.println(year);
-		int d = year % 7 + (year / 4) - (year / 100) + (year / 400);
+//		int d = year + (year / 4) - (year / 100) + (year / 400);
+		BigInteger d = year;
+		d = d.multiply(toBig(497)).divide(toBig(400));
 		for (int i = 1; i < month; i++)
-			d += Nday(i, year);
-		return (d - 1) % 7 + 2;
+			d = d.add(toBig(Nday(i, year)));
+		d = d.subtract(toBig(1));;
+		d = d.mod(toBig(7)).add(toBig(2));
+		return Integer.parseInt(d.toString());
 	}
 	
-	public int Nday(int month, int year) {
+	public int Nday(int month, BigInteger year) {
 		switch (month) {
 			case 1:
 			case 3:
@@ -186,7 +197,8 @@ public class Calendar extends JFrame implements ActionListener {
 	}
 	
 	public static void main(String[] args) {
-		new Calendar().timer.start();
+		Calendar k = new Calendar();
+		k.timer.start();
 	}
 
 	@Override
