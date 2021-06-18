@@ -20,6 +20,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.Calendar;
 
 import javax.swing.BorderFactory;
@@ -93,14 +94,13 @@ public class Event extends JFrame implements ActionListener{
 		String FILE_URL = "Event.txt";
     	File file = new File(FILE_URL);
         InputStream inputStream;
-		try {
-			inputStream = new FileInputStream(file);
-			InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
-	        BufferedReader reader = new BufferedReader(inputStreamReader);
-	 
-	        String line = "";
-	        try {
-				while((line = reader.readLine()) != null){
+        try (
+        		FileInputStream fis = new FileInputStream(file);
+        		InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
+        		BufferedReader reader = new BufferedReader(isr)
+        	){
+				String line;
+				while ((line = reader.readLine()) != null) {
 					String s[] = line.split(":");
 					while (s[1].indexOf("  ") >= 0)
 						s[1] = s[1].replace("  ", " ");
@@ -109,14 +109,10 @@ public class Event extends JFrame implements ActionListener{
 						evt[N ++][1] = s[1];
 					}
 				}
+
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 	
 	public void writeEvent() throws IOException {
