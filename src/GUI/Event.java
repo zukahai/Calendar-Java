@@ -10,6 +10,7 @@ import java.awt.TextArea;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -102,9 +103,9 @@ public class Event extends JFrame implements ActionListener{
 				String line;
 				while ((line = reader.readLine()) != null) {
 					String s[] = line.split(":");
-					while (s[1].indexOf("  ") >= 0)
-						s[1] = s[1].replace("  ", " ");
 					if (s.length == 2) {
+						while (s[1].indexOf("  ") >= 0)
+							s[1] = s[1].replace("  ", " ");
 						evt[N][0] = s[0];
 						evt[N ++][1] = s[1];
 					}
@@ -116,18 +117,20 @@ public class Event extends JFrame implements ActionListener{
 	}
 	
 	public void writeEvent() throws IOException {
-		try {
-			File file = new File("Event.txt");
-	        OutputStream outputStream;
-			outputStream = new FileOutputStream(file);
-			OutputStreamWriter outputStreamWriter = new OutputStreamWriter(outputStream);
-			for (int i = 0; i < N; i++)
-				outputStreamWriter.write(evt[i][0] + ": " + evt[i][1] + "\n");
-	        outputStreamWriter.flush();
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		File file = new File("Event.txt");
+		try (FileOutputStream fos = new FileOutputStream(file);
+	             OutputStreamWriter osw = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
+	             BufferedWriter writer = new BufferedWriter(osw)
+	        ) {
+
+			for (int i = 0; i < N; i++) {
+	                writer.append(evt[i][0] + ": " + evt[i][1]);
+	                writer.newLine();
+	            }
+
+	        } catch (IOException e) {
+	            e.printStackTrace();
+	        }
        
 	}
 	
