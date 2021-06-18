@@ -34,7 +34,7 @@ import javax.swing.Timer;
 
 public class Event extends JFrame implements ActionListener{
 	Container cn;
-	JLabel lb;
+	JTextField tf;
 	TextArea ta;
 	JButton bt;
 	String TIME;
@@ -50,20 +50,26 @@ public class Event extends JFrame implements ActionListener{
 	
 	public Container init() {
 		Container cn = this.getContentPane();
-		
-		JPanel pn = new JPanel();
-		pn.setLayout(new FlowLayout());
-		lb = new JLabel(TIME);
-		lb.setFont(new Font("Algerian", 1, 40));
-		pn.add(lb);
+		cn.setForeground(Color.black);
+
+		tf = new JTextField(TIME);
+		tf.setFont(new Font("Algerian", 1, 40));
+		tf.setBackground(Color.black);
+		tf.setForeground(Color.white);
+		tf.setHorizontalAlignment(JTextField.CENTER);
+		tf.enable(false);
 		
 		ta = new TextArea();
 		ta.setFont(new Font("Algerian", 1, 20));
+		ta.setBackground(Color.black);
+		ta.setForeground(Color.white);
 		
 		bt = new JButton("New Event");
 		bt.addActionListener(this);
-		bt.setFont(new Font("Algerian", 1, 15));
+		bt.setFont(new Font("Algerian", 1, 25));
 		bt.setBackground(Color.LIGHT_GRAY);
+		bt.setBackground(Color.black);
+		bt.setForeground(Color.white);
 		
 		updateEvent(TIME);
 		
@@ -75,7 +81,7 @@ public class Event extends JFrame implements ActionListener{
 		Point p = this.getLocation();
 		this.setLocation((int)p.getX() + 245, (int)p.getY());
 		
-		cn.add(pn, "North");
+		cn.add(tf, "North");
 		cn.add(ta);
 		cn.add(bt, "South");
 		
@@ -137,7 +143,7 @@ public class Event extends JFrame implements ActionListener{
 				str = str.replace(",", "\n");
 				return str;
 			}
-		return "No event";
+		return "No Event";
 	}
 	
 	public void addEvent(String time, String ev) {
@@ -155,8 +161,11 @@ public class Event extends JFrame implements ActionListener{
 	
 	public void updateEvent(String time) {
 		TIME = time;
-		lb.setText(time);
-		ta.setText(getEvent(time));
+		tf.setText(time);
+		String Eve = getEvent(time);
+		Eve = "     > " + Eve;
+		Eve = Eve.replace("\n", "\n     > ");
+		ta.setText(Eve);
 	}
 
 	@Override
@@ -177,6 +186,6 @@ public class Event extends JFrame implements ActionListener{
 	}
 	
 	public static void main(String[] args) {
-		new Event("27-12-2000");
+		new Event("18-06-2021");
 	}
 }

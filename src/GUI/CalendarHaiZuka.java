@@ -35,6 +35,7 @@ public class CalendarHaiZuka extends JFrame implements ActionListener {
 	public CalendarHaiZuka() {
 		super("Calendar - HaiZuka");
 		cn = init();
+		timer.start();
 	}
 	
 	int preMonth = MONTH;
@@ -227,8 +228,7 @@ public class CalendarHaiZuka extends JFrame implements ActionListener {
 	}
 	
 	public static void main(String[] args) {
-		CalendarHaiZuka k = new CalendarHaiZuka();
-		k.timer.start();
+		new CalendarHaiZuka();
 	}
 
 	@Override
