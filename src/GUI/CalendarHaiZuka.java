@@ -239,7 +239,7 @@ public class CalendarHaiZuka extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		if (e.getActionCommand().length() > 0) {
+		if (e.getActionCommand().length() > 6) {
 			ev.updateEvent(e.getActionCommand());
 		}
 	}
