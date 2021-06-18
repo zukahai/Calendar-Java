@@ -4,6 +4,7 @@ import java.awt.Container;
 import java.awt.Font;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.math.BigInteger;
@@ -27,6 +28,7 @@ public class CalendarHaiZuka extends JFrame implements ActionListener {
     int YEAR = c.get(Calendar.YEAR);
     int MONTH = c.get(Calendar.MONTH);
     int DAY = c.get(Calendar.DAY_OF_MONTH);
+    Event ev = new Event(leng2(DAY + "" + "-" + leng2(MONTH + 1 + "") + "-" + YEAR));
 	
 	String w[] = {"Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"};
 	String t[] = {"January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"};
@@ -40,7 +42,6 @@ public class CalendarHaiZuka extends JFrame implements ActionListener {
 	
 	public Container init() {
 		Container cn = this.getContentPane();
-		
 		JPanel pn = new JPanel();
 		pn.setLayout(new GridLayout(7, 7));
 		
@@ -88,6 +89,8 @@ public class CalendarHaiZuka extends JFrame implements ActionListener {
 		this.setResizable(false);
 		this.setSize(500, 398);
 		this.setLocationRelativeTo(null);
+		Point p = this.getLocation();
+		this.setLocation((int)p.getX() - 245, (int)p.getY());
 		update(preMonth + 1, preYear);
 		timer = new Timer(200, new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -121,6 +124,7 @@ public class CalendarHaiZuka extends JFrame implements ActionListener {
 			for (int j = 0; j < 7; j++) {
 				bt[i][j].setBackground(Color.black);
 				bt[i][j].setForeground(Color.white);
+				bt[i][j].setActionCommand("");
 			}
 	}
 	
@@ -145,6 +149,7 @@ public class CalendarHaiZuka extends JFrame implements ActionListener {
 		for (int i = 1; i <= day; i++) {
 			bt[I][J].setText(String.valueOf(i));
 			bt[I][J].setForeground(Color.white);
+			bt[I][J].setActionCommand(leng2(i + "") + "-" + leng2(month + "") + "-" + year);
 			if (year.compareTo(toBig(YEAR)) == 0 && month == MONTH + 1 && i == DAY) {
 				bt[I][J].setBackground(Color.cyan);
 			}
@@ -168,6 +173,12 @@ public class CalendarHaiZuka extends JFrame implements ActionListener {
 				I++;
 			}
 		}
+	}
+	
+	public String leng2(String s) {
+		if (s.length() == 1)
+			return "0" + s;
+		return s;
 	}
 	
 	public BigInteger toBig(int s) {
@@ -223,6 +234,8 @@ public class CalendarHaiZuka extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		
+		if (e.getActionCommand().length() > 0) {
+			ev.updateEvent(e.getActionCommand());
+		}
 	}
 }
