@@ -175,7 +175,7 @@ Thế là mình đã trình bày cách mà mình đã tạo ra một calendar kh
 
 Video demo:
 
-[<p align="center"> <img src="https://github.com/zukahai/HaiZuka/blob/master/Images/Calendar/5.png" alt="blog" /> </p>]()
+[<p align="center"> <img src="https://github.com/zukahai/HaiZuka/blob/master/Images/Calendar/5.png" alt="blog" /> </p>](https://www.youtube.com/watch?v=P1EzGFPhGh8&ab_channel=HaiZuka)
 
 
 
