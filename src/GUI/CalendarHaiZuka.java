@@ -92,6 +92,7 @@ public class CalendarHaiZuka extends JFrame implements ActionListener {
 		this.setLocationRelativeTo(null);
 		Point p = this.getLocation();
 		this.setLocation((int)p.getX() - 245, (int)p.getY());
+		
 		update(preMonth + 1, preYear);
 		timer = new Timer(200, new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -195,11 +196,15 @@ public class CalendarHaiZuka extends JFrame implements ActionListener {
 	}
 	
 	public int getThu(int month, BigInteger year) {
+		year = year.subtract(toBig(1));
 		BigInteger d = year;
-		d = d.multiply(toBig(497)).divide(toBig(400));
+		d = year.divide(toBig(4));
+		d = d.subtract(year.divide(toBig(100)));
+		d = d.add(year.divide(toBig(400)));
+		d = d.add(year.multiply(toBig(365)));
 		for (int i = 1; i < month; i++)
-			d = d.add(toBig(Nday(i, year)));
-		d = d.subtract(toBig(1));;
+			d = d.add(toBig(Nday(i, year.add(toBig(1)))));
+//		System.out.println(d);
 		d = d.mod(toBig(7)).add(toBig(2));
 		return Integer.parseInt(d.toString());
 	}
