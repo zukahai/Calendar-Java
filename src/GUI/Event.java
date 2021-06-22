@@ -131,7 +131,6 @@ public class Event extends JFrame implements ActionListener{
 	        } catch (IOException e) {
 	            e.printStackTrace();
 	        }
-       
 	}
 	
 	

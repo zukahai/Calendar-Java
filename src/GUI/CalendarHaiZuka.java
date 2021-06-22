@@ -7,6 +7,8 @@ import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.math.BigInteger;
 import java.util.Calendar;
 
@@ -18,7 +20,7 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class CalendarHaiZuka extends JFrame implements ActionListener {
+public class CalendarHaiZuka extends JFrame implements ActionListener, KeyListener {
 	Container cn;
 	JButton bt[][] = new JButton[7][7];
 	JComboBox ch;
@@ -38,6 +40,8 @@ public class CalendarHaiZuka extends JFrame implements ActionListener {
 		timer.start();
 	}
 	
+	String DateTime[][] = new String[7][7];
+	
 	int preMonth = MONTH;
 	BigInteger preYear = toBig(YEAR);
 	
@@ -50,6 +54,8 @@ public class CalendarHaiZuka extends JFrame implements ActionListener {
 			for (int j = 0; j < 7; j++) {
 				bt[i][j] = new JButton();
 				bt[i][j].addActionListener(this);
+				bt[i][j].setActionCommand((i * 7 + j) + "");
+				bt[i][j].addKeyListener(this);
 				bt[i][j].setFont(new Font("Britannic Bold", 1, 25));
 				bt[i][j].setBackground(Color.black);
 				bt[i][j].setForeground(Color.white);
@@ -126,7 +132,8 @@ public class CalendarHaiZuka extends JFrame implements ActionListener {
 			for (int j = 0; j < 7; j++) {
 				bt[i][j].setBackground(Color.black);
 				bt[i][j].setForeground(Color.white);
-				bt[i][j].setActionCommand("");
+				DateTime[i][j] = "";
+				bt[i][j].setBorder(null);
 			}
 	}
 	
@@ -151,7 +158,7 @@ public class CalendarHaiZuka extends JFrame implements ActionListener {
 		for (int i = 1; i <= day; i++) {
 			bt[I][J].setText(String.valueOf(i));
 			bt[I][J].setForeground(Color.white);
-			bt[I][J].setActionCommand(leng2(i + "") + "-" + leng2(month + "") + "-" + year);
+			DateTime[I][J] = leng2(i + "") + "-" + leng2(month + "") + "-" + year;
 			if (year.compareTo(toBig(YEAR)) == 0 && month == MONTH + 1 && i == DAY) {
 				bt[I][J].setBackground(Color.cyan);
 			}
@@ -239,8 +246,37 @@ public class CalendarHaiZuka extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		if (e.getActionCommand().length() > 6) {
-			ev.updateEvent(e.getActionCommand());
+		int k = Integer.parseInt(e.getActionCommand());
+		int j = k % 7;
+		int i = k / 7;
+//		System.out.println(i + " " + j + " " + DateTime[i][j]);
+		if (DateTime[i][j] != null && DateTime[i][j].length() > 1) {
+			for (int I = 0; I < 7; I++)
+				for (int J = 0; J < 7; J++)
+					bt[I][J].setBorder(null);
+					
+			bt[i][j].setBorder(BorderFactory.createMatteBorder(5 ,5 ,5 ,5, Color.red));
+			ev.updateEvent(DateTime[i][j]);
 		}
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		// TODO Auto-generated method stub
+		if (e.getKeyCode() == e.VK_DOWN) {
+			System.out.println("Hello");
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }
